@@ -25,14 +25,12 @@ create table public.profiles (
   updated_at timestamptz not null default now()
 );
 
-
-
-
 create index profiles_role_idx
 on public.profiles(role);
 
 create index profiles_status_idx
 on public.profiles(status);
+
 
 
 create or replace function public.set_updated_at()
@@ -50,3 +48,73 @@ before update on public.profiles
 for each row
 execute function public.set_updated_at();
 
+
+
+create or replace function public.handle_new_user()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  insert into public.profiles (
+    id,
+    full_name,
+    email
+  )
+  values (
+    new.id,
+    coalesce(new.raw_user_meta_data ->> 'full_name', ''),
+    new.email
+  );
+
+  return new;
+end;
+$$;
+
+create trigger on_auth_user_created
+after insert on auth.users
+for each row
+execute function public.handle_new_user();
+
+
+
+alter table public.profiles enable row level security;
+
+
+
+create policy "users can view own profile"
+on public.profiles
+for select
+to authenticated
+using (
+  id = auth.uid()
+);
+
+
+
+create policy "users can update own profile"
+on public.profiles
+for update
+to authenticated
+using (
+  id = auth.uid()
+)
+with check (
+  id = auth.uid()
+);
+
+
+
+create policy "admins can view profiles"
+on public.profiles
+for select
+to authenticated
+using (
+  exists (
+    select 1
+    from public.profiles admin_profile
+    where admin_profile.id = auth.uid()
+      and admin_profile.role = 'admin'
+  )
+);
