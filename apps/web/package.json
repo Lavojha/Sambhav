@@ -6,10 +6,12 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@sambhav/api-contracts": "0.1.0",
+    "@sambhav/types": "0.1.0",
+    "@sambhav/validation": "0.1.0",
     "@supabase/ssr": "^0.7.0",
     "@supabase/supabase-js": "^2.57.0",
     "next": "^15.5.0",
