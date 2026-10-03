@@ -3,17 +3,9 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "SAMBHAV UPSC",
-  description: "UPSC preparation and answer evaluation platform"
+  description: "UPSC preparation and AI-assisted answer evaluation platform"
 };
 
-export default function RootLayout({
-  children
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
-  return (
-    <html lang="en">
-      <body>{children}</body>
-    </html>
-  );
+export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+  return <html lang="en"><body>{children}</body></html>;
 }
