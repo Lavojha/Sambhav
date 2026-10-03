@@ -11,6 +11,9 @@ export const profileResponseSchema = z.object({
   updated_at: z.string()
 });
 
-export type ProfileResponse = z.infer<
-  typeof profileResponseSchema
->;
+export const profileApiResponseSchema = z.object({
+  success: z.literal(true),
+  data: profileResponseSchema
+});
+
+export type ProfileResponse = z.infer<typeof profileResponseSchema>;
